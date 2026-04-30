@@ -1,0 +1,82 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(to right, #021e12, #044d2c);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.register-container {
+  width: 900px;
+  background-color: #062a18;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.register-header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.register-header h1 {
+  color: #00ff66;
+}
+
+.register-header h2 {
+  color: #00ff66;
+}
+
+/* Grid layout for PC */
+.register-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-size: 12px;
+  color: #ccc;
+  margin-bottom: 5px;
+}
+
+input,
+select {
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  background-color: #0a2f1f;
+  color: white;
+}
+
+/* Full width elements */
+.btn {
+  grid-column: span 2;
+  background-color: #00ff66;
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn:hover {
+  background-color: #00cc55;
+}
+
+.login-link {
+  grid-column: span 2;
+  text-align: center;
+  margin-top: 10px;
+  color: #00ff66;
+  cursor: pointer;
+}

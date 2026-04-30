@@ -1,0 +1,129 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(to right, #021d0f, #043d24);
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Container */
+.login-container {
+  width: 900px;
+  display: flex;
+  background-color: #062a18;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* Left side (image) */
+.login-header {
+  flex: 1;
+  background-image: url("https://images.newscientist.com/wp-content/uploads/2020/10/05175158/2-oct_elephant.jpg");
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: flex-end;
+  padding: 20px;
+}
+
+.login-header h1 {
+  font-size: 32px;
+  color: #00ff66;
+}
+
+/* Right side (form) */
+.login-form {
+  flex: 1;
+  padding: 40px;
+  color: #00ff66;
+}
+
+.login-form h2 {
+  font-size: 28px;
+}
+
+.subtitle {
+  color: #aaa;
+  margin-bottom: 25px;
+}
+
+label {
+  font-size: 12px;
+  color: #888;
+  margin-top: 15px;
+  display: block;
+}
+
+/* Input box */
+.input-box {
+  display: flex;
+  align-items: center;
+  background-color: #0b2e1a;
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 5px;
+  transition: 0.3s;
+}
+
+.input-box:hover {
+  background-color: #124d2f;
+}
+
+.input-box input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: white;
+  font-size: 14px;
+}
+
+/* Eye icon */
+.eye {
+  cursor: pointer;
+  color: #aaa;
+}
+
+/* Forgot password */
+.forgot {
+  color: #00ff66;
+  text-align: right;
+  margin: 10px 0 20px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* Button */
+.login-btn {
+  width: 100%;
+  padding: 14px;
+  background-color: #00ff66;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  align-items: center;
+  transition: 0.3s;
+}
+
+.login-btn:hover {
+  background-color: #00cc55;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  margin-top: 20px;
+  color: #aaa;
+}
+
+.footer span {
+  color: #00ff66;
+  cursor: pointer;
+}
