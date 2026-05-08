@@ -1,81 +1,87 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  FaUser,
-  FaLock,
-  FaEye,
-  FaEyeSlash,
-  FaSignInAlt,
-} from "react-icons/fa";
+import { FaUser, FaLock, FaEye, FaEyeSlash, FaSignInAlt } from "react-icons/fa";
 import "../styles/Login.css";
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const [passwordVisible, setPasswordVisible] = useState(false);
+  
+  // State for backend connection
+  const [credentials, setCredentials] = useState({ identifier: "", password: "" });
 
-  const handleLogin = (e) => {
+  const handleChange = (e) => {
+    setCredentials({ ...credentials, [e.target.name]: e.target.value });
+  };
+
+  const handleLogin = async (e) => {
     e.preventDefault();
+    
+    // BACKEND CONNECT LOGIC:
+    // try {
+    //   const response = await fetch("YOUR_BACKEND_API/login", {
+    //     method: "POST",
+    //     headers: { "Content-Type": "application/json" },
+    //     body: JSON.stringify(credentials)
+    //   });
+    //   const data = await response.json();
+    //   if(data.success) navigate("/dashboard");
+    // } catch (err) { console.error(err); }
 
-    console.log("Login clicked");
-
-    // navigate("/dashboard");
+    // Simulation for now:
+    console.log("Login credentials:", credentials);
+    navigate("/dashboard"); 
   };
 
   return (
     <div className="login-container">
-      {/* Header */}
       <div className="login-header">
         <h1>EleSafe Lanka</h1>
       </div>
 
-      {/* Form */}
       <div className="login-form">
         <h2>Welcome Back</h2>
-        <p className="subtitle">
-          Sign in to report incidents and track activity.
-        </p>
+        <p className="subtitle">Sign in to manage safety incidents.</p>
 
         <form onSubmit={handleLogin}>
-          {/* Username */}
           <label>USERNAME OR EMAIL</label>
           <div className="input-box">
             <FaUser />
-            <input type="text" placeholder="RangerID / Email" />
+            <input 
+              type="text" 
+              name="identifier"
+              placeholder="RangerID / Email" 
+              value={credentials.identifier}
+              onChange={handleChange}
+              required
+            />
           </div>
 
-          {/* Password */}
           <label>PASSWORD</label>
           <div className="input-box">
             <FaLock />
-
             <input
+              name="password"
               type={passwordVisible ? "text" : "password"}
               placeholder="••••••••"
+              value={credentials.password}
+              onChange={handleChange}
+              required
             />
-
-            <span
-              className="eye"
-              onClick={() => setPasswordVisible(!passwordVisible)}
-            >
+            <span className="eye" onClick={() => setPasswordVisible(!passwordVisible)}>
               {passwordVisible ? <FaEyeSlash /> : <FaEye />}
             </span>
           </div>
 
           <p className="forgot">Forgot Password?</p>
 
-          {/* Button */}
           <button type="submit" className="login-btn">
-            <FaSignInAlt />
-            LOG IN
+            <FaSignInAlt /> LOG IN
           </button>
         </form>
 
-        {/* Footer */}
         <p className="footer">
-          Don't have an account?{" "}
-          <span onClick={() => navigate("/register")}>
-            Register Here
-          </span>
+          Don't have an account? <span onClick={() => navigate("/register")}>Register Here</span>
         </p>
       </div>
     </div>

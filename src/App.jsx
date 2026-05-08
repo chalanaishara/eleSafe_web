@@ -1,20 +1,43 @@
-import React from "react";
+import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import Sidebar from "./components/Sidebar";
+import TopBar from "./components/TopBar";
+import UsersTable from "./components/UsersTable";
+import OfficersTable from "./components/OfficersTable";
+import AdminProfile from "./components/AdminProfile";
+import "./App.css";
 
-function App() {
+function AdminDashboard() {
+  const [activeTab, setActiveTab] = useState("users");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  return (
+    <div className="admin-layout">
+      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+      <div className="main-viewport">
+        {activeTab !== "profile" && (
+          <TopBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+        )}
+        <div className="content-container">
+          {activeTab === "users" && <UsersTable searchTerm={searchTerm} />}
+          {activeTab === "officers" && <OfficersTable searchTerm={searchTerm} />}
+          {activeTab === "profile" && <AdminProfile />}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Login Page */}
         <Route path="/" element={<LoginPage />} />
-
-        {/* Register Page */}
         <Route path="/register" element={<RegisterPage />} />
-
-        {/* 404 Page (optional but recommended) */}
+        <Route path="/dashboard" element={<AdminDashboard />} />
         <Route
           path="*"
           element={
@@ -27,5 +50,3 @@ function App() {
     </BrowserRouter>
   );
 }
-
-export default App;
