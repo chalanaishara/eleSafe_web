@@ -1,100 +1,151 @@
-import React, { useState } from "react";
+// src/pages/RegisterPage.jsx
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { register } from "../services/api";
 import "../styles/register.css";
+
+const GENDERS = ["MALE", "FEMALE", "OTHER"];
 
 export default function RegisterPage() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
-    Nic: "", FirstName: "", LastName: "", Email: "",
-    PhoneNumber: "", Gender: "", Password: "",
-    Address: "", Village: "", Role: "", OfficerId: "",
+    firstName: "", lastName: "", nic: "", email: "",
+    phoneNumber: "", password: "", confirmPassword: "",
+    gender: "MALE", address: "", village: "",
+    badgeNumber: "", station: "",
   });
+  const [error,   setError]   = useState("");
+  const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
-  };
+  const set = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Validate required fields
-    if (!form.Email || !form.Password || !form.Role) {
-      alert("Please fill all required fields");
+    setError("");
+    if (form.password !== form.confirmPassword) {
+      setError("Passwords do not match.");
       return;
     }
-
-    console.log("Registering user:", form);
-    // BACKEND CONNECT LOGIC:
-    // const res = await fetch("API/register", { method: "POST", ... })
-    
-    alert("Registered Successfully!");
-    navigate("/"); // Go to login after registration
+    setLoading(true);
+    try {
+      await register({
+        firstName:   form.firstName,
+        lastName:    form.lastName,
+        nic:         form.nic,
+        email:       form.email,
+        phoneNumber: form.phoneNumber,
+        password:    form.password,
+        gender:      form.gender,
+        address:     form.address,
+        village:     form.village,
+        badgeNumber: form.badgeNumber,
+        station:     form.station,
+        role:        "WILD_OFFICER",
+      });
+      setSuccess(true);
+    } catch (err) {
+      setError(err.message || "Registration failed.");
+    } finally {
+      setLoading(false);
+    }
   };
+
+  if (success) {
+    return (
+      <div className="register-container">
+        <div className="success-card">
+          <div className="success-icon">✅</div>
+          <h2>Registration Submitted</h2>
+          <p>Your Wild Officer account is <strong>pending admin approval</strong>.</p>
+          <p>You will be able to log in once an administrator activates your account.</p>
+          <button className="login-redirect-btn" onClick={() => navigate("/")}>
+            Back to Login
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="register-container">
-      <div className="register-header">
-        <h1>EleSafe Lanka</h1>
-        <h2>Create Account</h2>
-      </div>
+      <div className="register-card">
+        <div className="register-header">
+          <h1>🐘 EleSafe Lanka</h1>
+          <h2>Wild Officer Registration</h2>
+          <p>Your account will be reviewed and activated by an administrator.</p>
+        </div>
 
-      <form className="register-form" onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label>First Name</label>
-          <input name="FirstName" placeholder="First Name" onChange={handleChange} />
-        </div>
-        <div className="form-group">
-          <label>Last Name</label>
-          <input name="LastName" placeholder="Last Name" onChange={handleChange} />
-        </div>
-        <div className="form-group">
-          <label>NIC Number</label>
-          <input name="Nic" placeholder="NIC" onChange={handleChange} />
-        </div>
-        <div className="form-group">
-          <label>Email</label>
-          <input name="Email" type="email" placeholder="Email" onChange={handleChange} />
-        </div>
-        <div className="form-group">
-          <label>Phone</label>
-          <input name="PhoneNumber" placeholder="Phone" onChange={handleChange} />
-        </div>
-        <div className="form-group">
-          <label>Gender</label>
-          <select name="Gender" onChange={handleChange}>
-            <option value="">Select Gender</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-          </select>
-        </div>
-        <div className="form-group">
-          <label>Village</label>
-          <input name="Village" placeholder="Village" onChange={handleChange} />
-        </div>
-        <div className="form-group">
-          <label>Role</label>
-          <select name="Role" onChange={handleChange}>
-            <option value="">Select Role</option>
-            <option value="User">User</option>
-            <option value="Wild Officer">Wild Officer</option>
-          </select>
-        </div>
-        
-        {form.Role === "Wild Officer" && (
-          <div className="form-group" style={{ gridColumn: "span 2" }}>
-            <label>Officer ID</label>
-            <input name="OfficerId" placeholder="Officer ID" onChange={handleChange} />
+        {error && <div className="error-banner">{error}</div>}
+
+        <form onSubmit={handleSubmit} className="register-form">
+          <div className="form-grid">
+            <div className="input-group">
+              <label>First Name *</label>
+              <input name="firstName" value={form.firstName} onChange={set} required placeholder="Kamal" />
+            </div>
+            <div className="input-group">
+              <label>Last Name *</label>
+              <input name="lastName" value={form.lastName} onChange={set} required placeholder="Perera" />
+            </div>
+            <div className="input-group">
+              <label>NIC *</label>
+              <input name="nic" value={form.nic} onChange={set} required placeholder="200012345678" />
+            </div>
+            <div className="input-group">
+              <label>Gender *</label>
+              <select name="gender" value={form.gender} onChange={set}>
+                {GENDERS.map(g => <option key={g} value={g}>{g}</option>)}
+              </select>
+            </div>
+            <div className="input-group full">
+              <label>Email *</label>
+              <input type="email" name="email" value={form.email} onChange={set} required placeholder="officer@wildlife.gov" />
+            </div>
+            <div className="input-group">
+              <label>Phone Number *</label>
+              <input name="phoneNumber" value={form.phoneNumber} onChange={set} required placeholder="0771234567" maxLength={10} />
+            </div>
+            <div className="input-group">
+              <label>Village</label>
+              <input name="village" value={form.village} onChange={set} placeholder="Yala" />
+            </div>
+            <div className="input-group full">
+              <label>Address</label>
+              <input name="address" value={form.address} onChange={set} placeholder="Ranger Quarter 4, Yala" />
+            </div>
+
+            <div className="section-title full">🛡️ Officer Details</div>
+
+            <div className="input-group">
+              <label>Badge Number *</label>
+              <input name="badgeNumber" value={form.badgeNumber} onChange={set} required placeholder="WP-5022" />
+            </div>
+            <div className="input-group">
+              <label>Station *</label>
+              <input name="station" value={form.station} onChange={set} required placeholder="Yala Station" />
+            </div>
+
+            <div className="section-title full">🔒 Password</div>
+
+            <div className="input-group">
+              <label>Password *</label>
+              <input type="password" name="password" value={form.password} onChange={set} required placeholder="••••••••" />
+            </div>
+            <div className="input-group">
+              <label>Confirm Password *</label>
+              <input type="password" name="confirmPassword" value={form.confirmPassword} onChange={set} required placeholder="••••••••" />
+            </div>
           </div>
-        )}
 
-        <div className="form-group" style={{ gridColumn: "span 2" }}>
-          <label>Password</label>
-          <input name="Password" type="password" placeholder="Password" onChange={handleChange} />
-        </div>
-
-        <button type="submit" className="btn">Register</button>
-        <p className="login-link" onClick={() => navigate("/")}>Already have an account? Login</p>
-      </form>
+          <div className="form-actions">
+            <button type="button" className="back-btn" onClick={() => navigate("/")}>Back to Login</button>
+            <button type="submit" className="submit-btn" disabled={loading}>
+              {loading ? "Submitting..." : "Submit Registration"}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
