@@ -1,83 +1,103 @@
-import { useState } from "react";
+// src/components/OfficersTable.jsx
+// ADMIN ONLY — shows all wild officers, allows activate (from PENDING) / suspend
+import { useState, useEffect } from "react";
+import { getAllOfficers, updateUserStatus } from "../services/api";
 import UserDetailsModal from "./UserDetailsModal";
 
+const STATUS_ACTIONS = {
+  ACTIVE:   { label: "Suspend",  next: "SUSPENDED", cls: "btn-suspend" },
+  SUSPENDED:{ label: "Activate", next: "ACTIVE",    cls: "btn-activate" },
+  PENDING:  { label: "Approve",  next: "ACTIVE",    cls: "btn-approve" },
+};
+
 export default function OfficersTable({ searchTerm }) {
-  const [selectedOfficer, setSelectedOfficer] = useState(null);
+  const [officers,   setOfficers]   = useState([]);
+  const [loading,    setLoading]    = useState(true);
+  const [error,      setError]      = useState("");
+  const [selected,   setSelected]   = useState(null);
+  const [togglingId, setTogglingId] = useState(null);
 
-  const [officers, setOfficers] = useState([
-    { 
-      userId: "OFF-201", firstName: "Ajith", lastName: "Bandara", nic: "198234567890",
-      userRole: "Wild Officer (WP-5022)", email: "ajith.b@wildlife.gov", phoneNumber: "0777778888",
-      gender: "Male", address: "Quarter 4, Ranger Camp", village: "Yala", status: "Active", profilePicture: null
-    },
-    { 
-      userId: "OFF-205", firstName: "Saman", lastName: "Rathnayake", nic: "198856789012",
-      userRole: "Wild Officer (WP-8810)", email: "saman.r@wildlife.gov", phoneNumber: "0712223333",
-      gender: "Male", address: "Camp 2, North Zone", village: "Wilpattu", status: "Active", profilePicture: null
+  useEffect(() => {
+    getAllOfficers()
+      .then(setOfficers)
+      .catch((e) => setError(e.message))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const changeStatus = async (userId, current, e) => {
+    e.stopPropagation();
+    const action = STATUS_ACTIONS[current];
+    if (!action) return;
+    setTogglingId(userId);
+    try {
+      await updateUserStatus(userId, action.next);
+      setOfficers((prev) =>
+        prev.map((o) => o.userId === userId ? { ...o, status: action.next } : o)
+      );
+    } catch (err) {
+      alert("Failed: " + err.message);
+    } finally {
+      setTogglingId(null);
     }
-  ]);
-
-  const toggleStatus = (id, e) => {
-    e.stopPropagation(); // Prevents opening the modal when toggling status
-    setOfficers(officers.map(o => 
-      o.userId === id ? { ...o, status: o.status === "Active" ? "Suspended" : "Active" } : o
-    ));
   };
 
-  const filtered = officers.filter(o => 
-    o.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    o.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    o.village.toLowerCase().includes(searchTerm.toLowerCase())
+  const filtered = officers.filter((o) =>
+    [o.firstName, o.lastName, o.village, o.userId, o.badgeNumber, o.station]
+      .some((v) => v?.toLowerCase().includes(searchTerm.toLowerCase()))
   );
+
+  const pendingCount = officers.filter((o) => o.status === "PENDING").length;
+
+  if (loading) return <div className="loading-state">Loading officers...</div>;
+  if (error)   return <div className="error-state">⚠ {error}</div>;
 
   return (
     <>
+      <div className="table-header-row">
+        <span className="table-count">{filtered.length} wild officers</span>
+        {pendingCount > 0 && (
+          <span className="pending-badge">⏳ {pendingCount} pending approval</span>
+        )}
+      </div>
       <div className="table-card">
         <table>
           <thead>
             <tr>
-              <th>User ID</th>
-              <th>Village</th>
-              <th>Name</th>
-              <th>Role / Badge</th>
-              <th>Phone</th>
-              <th>Status</th>
-              <th>Action</th>
+              <th>User ID</th><th>Name</th><th>Badge</th>
+              <th>Station</th><th>Village</th><th>Status</th><th>Action</th>
             </tr>
           </thead>
           <tbody>
-            {filtered.map(o => (
-              <tr 
-                key={o.userId} 
-                className="clickable-row"
-                onClick={() => setSelectedOfficer(o)}
-              >
-                <td>{o.userId}</td>
-                <td>{o.village}</td>
-                <td><strong>{o.firstName} {o.lastName}</strong></td>
-                <td>{o.userRole}</td>
-                <td>{o.phoneNumber}</td>
-                <td>
-                  <span className={`badge ${o.status.toLowerCase()}`}>{o.status}</span>
-                </td>
-                <td>
-                  <button 
-                    className={`action-btn ${o.status === "Active" ? "btn-suspend" : "btn-activate"}`}
-                    onClick={(e) => toggleStatus(o.userId, e)}
-                  >
-                    {o.status === "Active" ? "Suspend" : "Activate"}
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {filtered.length === 0 ? (
+              <tr><td colSpan={7} className="empty-cell">No officers found</td></tr>
+            ) : filtered.map((o) => {
+              const action = STATUS_ACTIONS[o.status];
+              return (
+                <tr key={o.userId} className="clickable-row" onClick={() => setSelected(o)}>
+                  <td>{o.userId}</td>
+                  <td><strong>{o.firstName} {o.lastName}</strong></td>
+                  <td>{o.badgeNumber || "—"}</td>
+                  <td>{o.station || "—"}</td>
+                  <td>{o.village || "—"}</td>
+                  <td><span className={`badge ${o.status?.toLowerCase()}`}>{o.status}</span></td>
+                  <td>
+                    {action && (
+                      <button
+                        className={`action-btn ${action.cls}`}
+                        onClick={(e) => changeStatus(o.userId, o.status, e)}
+                        disabled={togglingId === o.userId}
+                      >
+                        {togglingId === o.userId ? "..." : action.label}
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
-
-      <UserDetailsModal 
-        data={selectedOfficer} 
-        onClose={() => setSelectedOfficer(null)} 
-      />
+      <UserDetailsModal data={selected} onClose={() => setSelected(null)} />
     </>
   );
 }

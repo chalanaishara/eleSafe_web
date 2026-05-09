@@ -1,36 +1,51 @@
-import React, { useState } from "react";
+// src/pages/LoginPage.jsx
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaUser, FaLock, FaEye, FaEyeSlash, FaSignInAlt } from "react-icons/fa";
+import { login } from "../services/api";
+import { useAuth } from "../context/AuthContext";
 import "../styles/Login.css";
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const [passwordVisible, setPasswordVisible] = useState(false);
-  
-  // State for backend connection
-  const [credentials, setCredentials] = useState({ identifier: "", password: "" });
+  const { signIn } = useAuth();
+  const [form, setForm]             = useState({ email: "", password: "" });
+  const [showPass, setShowPass]     = useState(false);
+  const [error, setError]           = useState("");
+  const [loading, setLoading]       = useState(false);
 
-  const handleChange = (e) => {
-    setCredentials({ ...credentials, [e.target.name]: e.target.value });
-  };
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    
-    // BACKEND CONNECT LOGIC:
-    // try {
-    //   const response = await fetch("YOUR_BACKEND_API/login", {
-    //     method: "POST",
-    //     headers: { "Content-Type": "application/json" },
-    //     body: JSON.stringify(credentials)
-    //   });
-    //   const data = await response.json();
-    //   if(data.success) navigate("/dashboard");
-    // } catch (err) { console.error(err); }
+    setError("");
+    setLoading(true);
+    try {
+      const data = await login(form.email, form.password);
 
-    // Simulation for now:
-    console.log("Login credentials:", credentials);
-    navigate("/dashboard"); 
+      // Only ADMIN and WILD_OFFICER can access this web portal
+      if (!["ADMIN", "WILD_OFFICER"].includes(data.role)) {
+        setError("Access denied. This portal is for Admin and Wild Officers only.");
+        return;
+      }
+
+      // Wild Officers must be ACTIVE (not PENDING/SUSPENDED)
+      if (data.role === "WILD_OFFICER" && data.status !== "ACTIVE") {
+        setError(
+          data.status === "PENDING"
+            ? "Your account is pending admin approval. Please wait."
+            : "Your account has been suspended. Contact admin."
+        );
+        return;
+      }
+
+      signIn(data);
+      navigate(data.role === "ADMIN" ? "/dashboard" : "/officer");
+    } catch (err) {
+      setError(err.message || "Login failed. Check your credentials.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -41,47 +56,38 @@ export default function LoginPage() {
 
       <div className="login-form">
         <h2>Welcome Back</h2>
-        <p className="subtitle">Sign in to manage safety incidents.</p>
+        <p className="subtitle">Staff portal — Admin & Wild Officers only.</p>
+
+        {error && <div className="error-banner">{error}</div>}
 
         <form onSubmit={handleLogin}>
-          <label>USERNAME OR EMAIL</label>
+          <label>EMAIL</label>
           <div className="input-box">
             <FaUser />
-            <input 
-              type="text" 
-              name="identifier"
-              placeholder="RangerID / Email" 
-              value={credentials.identifier}
-              onChange={handleChange}
-              required
-            />
+            <input type="email" name="email" placeholder="your@email.com"
+              value={form.email} onChange={handleChange} required />
           </div>
 
           <label>PASSWORD</label>
           <div className="input-box">
             <FaLock />
-            <input
-              name="password"
-              type={passwordVisible ? "text" : "password"}
-              placeholder="••••••••"
-              value={credentials.password}
-              onChange={handleChange}
-              required
-            />
-            <span className="eye" onClick={() => setPasswordVisible(!passwordVisible)}>
-              {passwordVisible ? <FaEyeSlash /> : <FaEye />}
+            <input name="password" type={showPass ? "text" : "password"}
+              placeholder="••••••••" value={form.password} onChange={handleChange} required />
+            <span className="eye" onClick={() => setShowPass(!showPass)}>
+              {showPass ? <FaEyeSlash /> : <FaEye />}
             </span>
           </div>
 
           <p className="forgot">Forgot Password?</p>
 
-          <button type="submit" className="login-btn">
-            <FaSignInAlt /> LOG IN
+          <button type="submit" className="login-btn" disabled={loading}>
+            <FaSignInAlt /> {loading ? "Logging in..." : "LOG IN"}
           </button>
         </form>
 
         <p className="footer">
-          Don't have an account? <span onClick={() => navigate("/register")}>Register Here</span>
+          Wild Officer?{" "}
+          <span onClick={() => navigate("/register")}>Register Here</span>
         </p>
       </div>
     </div>

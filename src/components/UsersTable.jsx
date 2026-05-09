@@ -1,72 +1,76 @@
-import { useState } from "react";
+// src/components/UsersTable.jsx
+// ADMIN ONLY — shows all village users (role=USER), allows activate/suspend
+import { useState, useEffect } from "react";
+import { getAllUsers, updateUserStatus } from "../services/api";
 import UserDetailsModal from "./UserDetailsModal";
 
 export default function UsersTable({ searchTerm }) {
-  const [selectedUser, setSelectedUser] = useState(null);
-  
-  const [users, setUsers] = useState([
-    { 
-      userId: "U-1001", firstName: "Kamal", lastName: "Gunaratne", nic: "199012345678",
-      userRole: "Village User", email: "kamal@gmail.com", phoneNumber: "0771234567",
-      gender: "Male", address: "No 12, Main Road", village: "Kandy", status: "Active", profilePicture: null
-    },
-    { 
-      userId: "U-1002", firstName: "Sunil", lastName: "Perera", nic: "198598765432",
-      userRole: "Village User", email: "sunil@gmail.com", phoneNumber: "0719876543",
-      gender: "Male", address: "Lake View, South Side", village: "Galle", status: "Suspended", profilePicture: null
-    }
-  ]);
+  const [users,      setUsers]      = useState([]);
+  const [loading,    setLoading]    = useState(true);
+  const [error,      setError]      = useState("");
+  const [selected,   setSelected]   = useState(null);
+  const [togglingId, setTogglingId] = useState(null);
 
-  const toggleStatus = (id, e) => {
-    e.stopPropagation(); // Prevents the row click event from firing when clicking the button
-    setUsers(users.map(u => 
-      u.userId === id ? { ...u, status: u.status === "Active" ? "Suspended" : "Active" } : u
-    ));
+  useEffect(() => {
+    getAllUsers()
+      .then((all) => setUsers(all.filter((u) => u.role === "USER")))
+      .catch((e) => setError(e.message))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const toggleStatus = async (userId, current, e) => {
+    e.stopPropagation();
+    const next = current === "ACTIVE" ? "SUSPENDED" : "ACTIVE";
+    setTogglingId(userId);
+    try {
+      await updateUserStatus(userId, next);
+      setUsers((prev) => prev.map((u) => u.userId === userId ? { ...u, status: next } : u));
+    } catch (err) {
+      alert("Failed: " + err.message);
+    } finally {
+      setTogglingId(null);
+    }
   };
 
-  const filtered = users.filter(u => 
-    u.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    u.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    u.village.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    u.userId.toLowerCase().includes(searchTerm.toLowerCase())
+  const filtered = users.filter((u) =>
+    [u.firstName, u.lastName, u.village, u.userId, u.email]
+      .some((v) => v?.toLowerCase().includes(searchTerm.toLowerCase()))
   );
+
+  if (loading) return <div className="loading-state">Loading users...</div>;
+  if (error)   return <div className="error-state">⚠ {error}</div>;
 
   return (
     <>
+      <div className="table-header-row">
+        <span className="table-count">{filtered.length} village users</span>
+      </div>
       <div className="table-card">
         <table>
           <thead>
             <tr>
-              <th>User ID</th>
-              <th>Village</th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Phone</th>
-              <th>Status</th>
-              <th>Action</th>
+              <th>User ID</th><th>Name</th><th>Village</th>
+              <th>Email</th><th>Phone</th><th>Status</th><th>Action</th>
             </tr>
           </thead>
           <tbody>
-            {filtered.map(u => (
-              <tr 
-                key={u.userId} 
-                className="clickable-row"
-                onClick={() => setSelectedUser(u)}
-              >
+            {filtered.length === 0 ? (
+              <tr><td colSpan={7} className="empty-cell">No users found</td></tr>
+            ) : filtered.map((u) => (
+              <tr key={u.userId} className="clickable-row" onClick={() => setSelected(u)}>
                 <td>{u.userId}</td>
-                <td>{u.village}</td>
                 <td><strong>{u.firstName} {u.lastName}</strong></td>
+                <td>{u.village || "—"}</td>
                 <td>{u.email}</td>
-                <td>{u.phoneNumber}</td>
+                <td>{u.phoneNumber || "—"}</td>
+                <td><span className={`badge ${u.status?.toLowerCase()}`}>{u.status}</span></td>
                 <td>
-                  <span className={`badge ${u.status.toLowerCase()}`}>{u.status}</span>
-                </td>
-                <td>
-                  <button 
-                    className={`action-btn ${u.status === "Active" ? "btn-suspend" : "btn-activate"}`}
-                    onClick={(e) => toggleStatus(u.userId, e)}
+                  <button
+                    className={`action-btn ${u.status === "ACTIVE" ? "btn-suspend" : "btn-activate"}`}
+                    onClick={(e) => toggleStatus(u.userId, u.status, e)}
+                    disabled={togglingId === u.userId}
                   >
-                    {u.status === "Active" ? "Suspend" : "Activate"}
+                    {togglingId === u.userId ? "..." : u.status === "ACTIVE" ? "Suspend" : "Activate"}
                   </button>
                 </td>
               </tr>
@@ -74,12 +78,7 @@ export default function UsersTable({ searchTerm }) {
           </tbody>
         </table>
       </div>
-
-      {/* Render the modal if a user is selected */}
-      <UserDetailsModal 
-        data={selectedUser} 
-        onClose={() => setSelectedUser(null)} 
-      />
+      <UserDetailsModal data={selected} onClose={() => setSelected(null)} />
     </>
   );
 }
