@@ -41,7 +41,7 @@ function AdminDashboard() {
   };
 
   return (
-    <div className="admin-layout">
+    <div className="dashboard-root admin-layout">
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} role="ADMIN" />
       <div className="main-viewport">
         {activeTab !== "profile" && (
@@ -64,7 +64,7 @@ function OfficerDashboard() {
   };
 
   return (
-    <div className="admin-layout">
+    <div className="dashboard-root admin-layout">
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} role="WILD_OFFICER" />
       <div className="main-viewport">
         {activeTab !== "profile" && (
