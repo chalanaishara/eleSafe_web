@@ -115,7 +115,7 @@ export default function ReportsTable({ searchTerm }) {
               <div style={{ marginTop: 16 }}>
                 <span className="detail-label">Evidence Photo</span>
                 <img src={selected.imagePath} alt="Evidence"
-                  style={{ width: "100%", borderRadius: 10, marginTop: 8, maxHeight: 240, objectFit: "cover" }} />
+                  style={{ width: "100%", borderRadius: 10, marginTop: 8, maxHeight: 600, objectFit: "cover" }} />
               </div>
             )}
           </div>
