@@ -1,7 +1,7 @@
 // src/components/OfficerReports.jsx
-// WILD OFFICER — view recent reports, update damage report status
+// WILD OFFICER — view reports in their duty district, update damage report status
 import { useState, useEffect } from "react";
-import { getRecentReports, updateDamageStatus } from "../services/api";
+import { getReportsByOfficerDistrict, updateDamageStatus } from "../services/api";
 
 const DAMAGE_STATUSES = ["PENDING", "IN_PROGRESS", "RESOLVED"];
 
@@ -25,7 +25,8 @@ export default function OfficerReports({ searchTerm }) {
   const [tab,        setTab]        = useState("sighting"); // "sighting" | "damage"
 
   useEffect(() => {
-    getRecentReports()
+    // ✅ Fetches only reports within this officer's registered duty district
+    getReportsByOfficerDistrict()
       .then(setReports)
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false));
@@ -62,8 +63,22 @@ export default function OfficerReports({ searchTerm }) {
   const sightingCount = reports.filter(isSighting).length;
   const damageCount   = reports.filter(isDamage).length;
 
+  // Show the district from the first report (all belong to same district)
+  const dutyDistrict = reports[0]?.district || null;
+
   return (
     <>
+      {/* District badge */}
+      {dutyDistrict && (
+        <div style={{
+          display: "inline-flex", alignItems: "center", gap: 8,
+          background: "#e8f5e9", color: "#1b5e20",
+          borderRadius: 8, padding: "6px 14px", marginBottom: 16,
+          fontWeight: 600, fontSize: "0.9rem",
+        }}>
+          📍 Duty District: {dutyDistrict}
+        </div>
+      )}
       {/* Tab switcher */}
       <div className="tab-switcher">
         <button

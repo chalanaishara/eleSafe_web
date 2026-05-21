@@ -63,6 +63,7 @@ export default function AdminProfile() {
               <InfoField label="Phone"        value={admin.phoneNumber} />
               <InfoField label="NIC"          value={admin.nic} />
               <InfoField label="Village"      value={admin.village} />
+              <InfoField label="District"     value={admin.district} />
               <InfoField label="Status"       value={admin.status} />
               <InfoField label="Role"         value={admin.role} />
             </div>

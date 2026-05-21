@@ -68,9 +68,10 @@ export default function OfficerProfile() {
           <div className="card">
             <div className="card-header">🛡️ Officer Details</div>
             <div className="personal-info-row">
-              <InfoField label="Badge Number" value={profile.badgeNumber} />
-              <InfoField label="Station"      value={profile.station} />
-              <InfoField label="Status"       value={profile.status} />
+              <InfoField label="Badge Number"  value={profile.badgeNumber} />
+              <InfoField label="Station"       value={profile.station} />
+              <InfoField label="Office Area District" value={profile.district} />
+              <InfoField label="Status"        value={profile.status} />
             </div>
           </div>
         </div>

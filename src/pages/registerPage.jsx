@@ -6,12 +6,20 @@ import "../styles/register.css";
 
 const GENDERS = ["MALE", "FEMALE", "OTHER"];
 
+const SRI_LANKA_DISTRICTS = [
+  "Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo",
+  "Galle", "Gampaha", "Hambantota", "Jaffna", "Kalutara",
+  "Kandy", "Kegalle", "Kilinochchi", "Kurunegala", "Mannar",
+  "Matale", "Matara", "Moneragala", "Mullaitivu", "Nuwara Eliya",
+  "Polonnaruwa", "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya",
+];
+
 export default function RegisterPage() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
     firstName: "", lastName: "", nic: "", email: "",
     phoneNumber: "", password: "", confirmPassword: "",
-    gender: "MALE", address: "", village: "",
+    gender: "MALE", address: "", village: "", district: "",
     badgeNumber: "", station: "",
   });
   const [error,   setError]   = useState("");
@@ -39,6 +47,7 @@ export default function RegisterPage() {
         gender:      form.gender,
         address:     form.address,
         village:     form.village,
+        district:    form.district,
         badgeNumber: form.badgeNumber,
         station:     form.station,
         role:        "WILD_OFFICER",
@@ -124,6 +133,17 @@ export default function RegisterPage() {
             <div className="input-group">
               <label>Station *</label>
               <input name="station" value={form.station} onChange={set} required placeholder="Yala Station" />
+            </div>
+
+            {/* ✅ District dropdown inside Officer Details — maps to backend district field */}
+            <div className="input-group">
+              <label>Office Area District *</label>
+              <select name="district" value={form.district} onChange={set} required>
+                <option value="" disabled>Select District</option>
+                {SRI_LANKA_DISTRICTS.map((d) => (
+                  <option key={d} value={d}>{d}</option>
+                ))}
+              </select>
             </div>
 
             <div className="section-title full">🔒 Password</div>

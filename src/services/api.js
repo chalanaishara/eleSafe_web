@@ -94,6 +94,13 @@ export const updateUserStatus = (userId, status) =>
 export const getRecentReports       = ()         => authFetch("/api/reports/recent");
 export const getReportById          = (id)       => authFetch(`/api/reports/${id}`);
 export const getReportsByVillage    = (village)  => authFetch(`/api/reports/village/${village}`);
+
+// ✅ Officer's own duty-district reports (district derived from profile server-side)
+export const getReportsByOfficerDistrict = () => authFetch("/api/reports/district");
+
+// ✅ Specific district — officer must match; admin can use any
+export const getReportsByDistrict   = (district) => authFetch(`/api/reports/district/${encodeURIComponent(district)}`);
+
 export const updateDamageStatus     = (id, status) =>
   authFetch(`/api/reports/damage/${id}/status`, {
     method: "PATCH",
