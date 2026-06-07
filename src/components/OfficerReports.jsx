@@ -1,9 +1,29 @@
 // src/components/OfficerReports.jsx
 // WILD OFFICER — view reports in their duty district, update damage report status
 import { useState, useEffect } from "react";
-import { getReportsByOfficerDistrict, updateDamageStatus } from "../services/api";
+import { getReportsByOfficerDistrict, updateReportStatus } from "../services/api";
 
-const DAMAGE_STATUSES = ["PENDING", "IN_PROGRESS", "RESOLVED"];
+const REPORT_STATUSES = ["PENDING", "IN_PROGRESS", "RESOLVED"];
+
+const STATUS_LABELS = {
+  PENDING: "Pending",
+  IN_PROGRESS: "In Progress",
+  RESOLVED: "Resolved",
+  VERIFIED: "Verified",
+  REJECTED: "Rejected",
+};
+
+function statusBadgeClass(status) {
+  if (!status || status === "PENDING") return "pending";
+  if (status === "IN_PROGRESS" || status === "VERIFIED") return "in_progress";
+  if (status === "RESOLVED") return "resolved";
+  return status.toLowerCase();
+}
+
+function statusLabel(status) {
+  if (!status) return "Pending";
+  return STATUS_LABELS[status] || status;
+}
 
 function formatDate(raw) {
   if (!raw) return "—";
@@ -45,7 +65,7 @@ export default function OfficerReports({ searchTerm }) {
   const handleStatusChange = async (reportId, newStatus) => {
     setUpdatingId(reportId);
     try {
-      await updateDamageStatus(reportId, newStatus);
+      await updateReportStatus(reportId, newStatus);
       setReports((prev) =>
         prev.map((r) => r.reportId === reportId ? { ...r, status: newStatus } : r)
       );
@@ -101,12 +121,12 @@ export default function OfficerReports({ searchTerm }) {
             <tr>
               <th>Report ID</th><th>Reporter</th><th>Location</th>
               <th>Details</th><th>Date</th><th>Status</th>
-              {tab === "damage" && <th>Update Status</th>}
+              <th>Update Status</th>
             </tr>
           </thead>
           <tbody>
             {visible.length === 0 ? (
-              <tr><td colSpan={7} className="empty-cell">No reports found</td></tr>
+              <tr><td colSpan={8} className="empty-cell">No reports found</td></tr>
             ) : visible.map((r) => (
               <tr key={r.reportId} className="clickable-row" onClick={() => setSelected(r)}>
                 <td><code>{r.reportId}</code></td>
@@ -124,24 +144,22 @@ export default function OfficerReports({ searchTerm }) {
                 </td>
                 <td style={{ fontSize: "0.85rem" }}>{formatDate(r.dateTime)}</td>
                 <td>
-                  <span className={`badge ${r.status?.toLowerCase() || "active"}`}>
-                    {r.status || "Reported"}
+                  <span className={`badge ${statusBadgeClass(r.status)}`}>
+                    {statusLabel(r.status)}
                   </span>
                 </td>
-                {tab === "damage" && (
-                  <td onClick={(e) => e.stopPropagation()}>
-                    <select
-                      className="status-select"
-                      value={r.status || "PENDING"}
-                      onChange={(e) => handleStatusChange(r.reportId, e.target.value)}
-                      disabled={updatingId === r.reportId}
-                    >
-                      {DAMAGE_STATUSES.map((s) => (
-                        <option key={s} value={s}>{s}</option>
-                      ))}
-                    </select>
-                  </td>
-                )}
+                <td onClick={(e) => e.stopPropagation()}>
+                  <select
+                    className="status-select"
+                    value={r.status || "PENDING"}
+                    onChange={(e) => handleStatusChange(r.reportId, e.target.value)}
+                    disabled={updatingId === r.reportId || r.status === "RESOLVED"}
+                  >
+                    {REPORT_STATUSES.map((s) => (
+                      <option key={s} value={s}>{statusLabel(s)}</option>
+                    ))}
+                  </select>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -166,7 +184,7 @@ export default function OfficerReports({ searchTerm }) {
                 { label: "Behavior",    value: selected.behavior },
                 { label: "Damage Type", value: selected.damageType },
                 { label: "Notes",       value: selected.description || selected.additionalNotes },
-                { label: "Status",      value: selected.status },
+                { label: "Status",      value: statusLabel(selected.status) },
               ].filter((r) => r.value != null).map((r) => (
                 <div className="detail-row" key={r.label}>
                   <span className="detail-label">{r.label}</span>
@@ -178,24 +196,25 @@ export default function OfficerReports({ searchTerm }) {
               <img src={selected.imagePath} alt="Evidence"
                 style={{ width: "100%", borderRadius: 10, marginTop: 12, maxHeight: 600, objectFit: "cover" }} />
             )}
-            {isDamage(selected) && (
-              <div style={{ marginTop: 16 }}>
-                <label className="detail-label">Update Status</label>
-                <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
-                  {DAMAGE_STATUSES.map((s) => (
-                    <button
-                      key={s}
-                      className={`action-btn ${selected.status === s ? "btn-activate" : ""}`}
-                      style={{ flex: 1, opacity: updatingId === selected.reportId ? 0.6 : 1 }}
-                      onClick={() => handleStatusChange(selected.reportId, s)}
-                      disabled={updatingId === selected.reportId}
-                    >
-                      {s}
-                    </button>
-                  ))}
-                </div>
+            <div style={{ marginTop: 16 }}>
+              <label className="detail-label">Update Status</label>
+              <p style={{ fontSize: "0.85rem", color: "#64748b", margin: "6px 0 10px" }}>
+                Mark as <strong>In Progress</strong> when you arrive on site, and <strong>Resolved</strong> after the incident is handled.
+              </p>
+              <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+                {REPORT_STATUSES.map((s) => (
+                  <button
+                    key={s}
+                    className={`action-btn ${selected.status === s ? "btn-activate" : ""}`}
+                    style={{ flex: 1, opacity: updatingId === selected.reportId ? 0.6 : 1 }}
+                    onClick={() => handleStatusChange(selected.reportId, s)}
+                    disabled={updatingId === selected.reportId || selected.status === "RESOLVED"}
+                  >
+                    {statusLabel(s)}
+                  </button>
+                ))}
               </div>
-            )}
+            </div>
           </div>
         </div>
       )}

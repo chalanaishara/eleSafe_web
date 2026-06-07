@@ -101,8 +101,11 @@ export const getReportsByOfficerDistrict = () => authFetch("/api/reports/distric
 // ✅ Specific district — officer must match; admin can use any
 export const getReportsByDistrict   = (district) => authFetch(`/api/reports/district/${encodeURIComponent(district)}`);
 
-export const updateDamageStatus     = (id, status) =>
-  authFetch(`/api/reports/damage/${id}/status`, {
+export const updateReportStatus = (id, status) =>
+  authFetch(`/api/reports/${id}/status`, {
     method: "PATCH",
     body: JSON.stringify({ status }),
   });
+
+/** @deprecated use updateReportStatus */
+export const updateDamageStatus = updateReportStatus;
