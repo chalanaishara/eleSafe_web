@@ -140,7 +140,7 @@ td { padding: 13px 15px; border-bottom: 1px solid #f0f0f0; font-size: 0.9rem; co
 .tab-btn { padding: 9px 20px; border: 1.5px solid var(--border-color); border-radius: 8px; background: white; cursor: pointer; font-weight: 600; font-size: 0.88rem; color: #64748b; transition: 0.2s; display: flex; align-items: center; gap: 8px; }
 .tab-btn.active { background: var(--primary-green); color: white; border-color: var(--primary-green); }
 .tab-count { background: rgba(255,255,255,0.25); border-radius: 99px; padding: 1px 7px; font-size: 0.78rem; }
-.status-select { padding: 5px 8px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.82rem; cursor: pointer; background: white; outline: none; }
+.status-select { padding: 5px 8px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.82rem; cursor: pointer; background: #ffffff; color: #000000; outline: none; }
 .loading-state { text-align: center; padding: 70px; color: #64748b; }
 .error-state   { text-align: center; padding: 70px; color: #ef4444; }
 
@@ -221,9 +221,11 @@ td { padding: 13px 15px; border-bottom: 1px solid #f0f0f0; font-size: 0.9rem; co
 .form-grid .input-group.full { grid-column: span 2; }
 .form-grid .section-title { grid-column: span 2; color: #13ec37; font-weight: 700; margin-top: 8px; font-size: 0.95rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 16px; }
 .form-grid label    { color: #9ca3af; font-size: 0.82rem; margin-bottom: 5px; }
-.form-grid input, .form-grid select { background: #0b2e1a; border: 1px solid #1f4d2e; color: white; padding: 10px 12px; border-radius: 8px; font-size: 0.9rem; outline: none; width: 100%; box-sizing: border-box; }
-.form-grid input:focus, .form-grid select:focus { border-color: #13ec37; }
-.form-grid select option { background: #0b2e1a; }
+.form-grid input { background: #0b2e1a; border: 1px solid #1f4d2e; color: white; padding: 10px 12px; border-radius: 8px; font-size: 0.9rem; outline: none; width: 100%; box-sizing: border-box; }
+.form-grid select { background: #ffffff; border: 1px solid #d1d5db; color: #000000; padding: 10px 12px; border-radius: 8px; font-size: 0.9rem; outline: none; width: 100%; box-sizing: border-box; }
+.form-grid input:focus { border-color: #13ec37; }
+.form-grid select:focus { border-color: #13ec37; }
+.form-grid select option { background: #ffffff; color: #000000; }
 .form-actions       { display: flex; gap: 12px; margin-top: 28px; }
 .back-btn           { padding: 12px 24px; background: transparent; border: 1px solid #4a6650; color: #9ca3af; border-radius: 8px; cursor: pointer; font-weight: 600; }
 .submit-btn         { flex: 1; padding: 12px; background: #13ec37; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 1rem; color: black; }
