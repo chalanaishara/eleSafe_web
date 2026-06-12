@@ -78,6 +78,7 @@ export default function RegisterPage() {
 
   return (
     <div className="register-container">
+         
       <div className="register-card">
         <div className="register-header">
           <h1>🐘 EleSafe Lanka</h1>
@@ -135,7 +136,7 @@ export default function RegisterPage() {
               <input name="station" value={form.station} onChange={set} required placeholder="Yala Station" />
             </div>
 
-            {/* ✅ District dropdown inside Officer Details — maps to backend district field */}
+            {/* ✅ District dropdown inside Officer Details  maps to backend district field */}
             <div className="input-group">
               <label>Office Area District *</label>
               <select name="district" value={form.district} onChange={set} required>
