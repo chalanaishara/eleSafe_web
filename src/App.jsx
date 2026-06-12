@@ -8,7 +8,7 @@ import LoginPage     from "./pages/LoginPage";
 import Sidebar       from "./components/Sidebar";
 import TopBar        from "./components/TopBar";
 
-// Admin tabs
+// Admin tab
 import UsersTable    from "./components/UsersTable";
 import OfficersTable from "./components/OfficersTable";
 import ReportsTable  from "./components/ReportsTable";
