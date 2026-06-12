@@ -20,6 +20,8 @@ export default function RegisterPage() {
 
   const set = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
+  //sdc
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
