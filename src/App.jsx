@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 
 import LoginPage     from "./pages/LoginPage";
-import RegisterPage  from "./pages/RegisterPage";
+
 import Sidebar       from "./components/Sidebar";
 import TopBar        from "./components/TopBar";
 
@@ -19,6 +19,7 @@ import OfficerReports  from "./components/OfficerReports";
 import OfficerProfile  from "./components/OfficerProfile";
 
 import "./App.css";
+import RegisterPage from "./pages/registerPage";
 
 // ── Route guard ───────────────────────────────────────────────────────────────
 function RequireAuth({ children, roles }) {
@@ -83,7 +84,7 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/"         element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/register" element={<RegisterPage/>} />
           <Route
             path="/dashboard"
             element={
