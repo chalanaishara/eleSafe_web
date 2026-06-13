@@ -111,7 +111,7 @@ export default function RegisterPage() {
         <div className="auth-brand auth-brand--short">
           <div className="brand-overlay" />
           <div className="brand-content">
-            <img src="/favicon.svg" alt="EleSafe" className="brand-logo" />
+            <img src="/icon.png" alt="EleSafe" className="brand-logo" />
             <h1>EleSafe Lanka</h1>
             <p className="brand-tagline">Join the wildlife protection team. Register as a Wild Officer.</p>
             <div className="brand-features">

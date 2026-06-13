@@ -52,7 +52,7 @@ export default function LoginPage() {
         <div className="auth-brand">
           <div className="brand-overlay" />
           <div className="brand-content">
-            <img src="/favicon.svg" alt="EleSafe" className="brand-logo" />
+            <img src="/icon.png" alt="EleSafe" className="brand-logo" />
             <h1>EleSafe Lanka</h1>
             <p className="brand-tagline">Wildlife Alert &amp; Safety Portal for staff and officers.</p>
             <div className="brand-features">
