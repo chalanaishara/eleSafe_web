@@ -6,7 +6,7 @@
   align-items: center;
   justify-content: center;
   padding: 24px 16px;
-  background: #ffffff;
+  background: #e8f5e9;
   font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
 }
 
@@ -326,7 +326,7 @@
   align-items: center;
   justify-content: center;
   padding: 24px;
-  background: #ffffff;
+  background: #e8f5e9;
 }
 
 .auth-success-card {
@@ -369,6 +369,65 @@
   line-height: 1.5;
 }
 
+/* Login — fit one screen, no page scroll */
+.auth-page--login {
+  height: 100dvh;
+  min-height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+  padding: 20px 16px;
+  box-sizing: border-box;
+}
+
+.auth-shell--login {
+  height: 100%;
+  max-height: 100%;
+  min-height: 0;
+}
+
+.auth-shell--login .auth-brand {
+  min-height: 0;
+  height: 100%;
+}
+
+.auth-shell--login .auth-panel {
+  max-height: none;
+  overflow: hidden;
+  align-items: center;
+  padding: 28px 32px;
+}
+
+.auth-shell--login .brand-content {
+  padding: 28px 24px;
+}
+
+.auth-shell--login .brand-logo {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 12px;
+}
+
+.auth-shell--login .brand-content h1 {
+  font-size: 1.5rem;
+}
+
+.auth-shell--login .brand-tagline {
+  margin-bottom: 14px;
+  font-size: 0.86rem;
+}
+
+.auth-shell--login .auth-subtitle {
+  margin-bottom: 18px;
+}
+
+.auth-shell--login .auth-btn-primary {
+  margin-top: 20px;
+}
+
+.auth-shell--login .auth-footer {
+  margin-top: 16px;
+}
+
 @media (max-width: 900px) {
   .auth-shell,
   .auth-shell--wide {
@@ -379,6 +438,21 @@
   .auth-brand,
   .auth-brand--short {
     min-height: 200px;
+  }
+
+  .auth-shell--login .auth-brand {
+    min-height: 160px;
+    height: auto;
+  }
+
+  .auth-shell--login {
+    height: auto;
+    max-height: 100%;
+    overflow-y: auto;
+  }
+
+  .auth-page--login {
+    overflow-y: auto;
   }
 
   .brand-features {

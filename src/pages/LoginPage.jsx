@@ -47,8 +47,8 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="auth-page">
-      <div className="auth-shell">
+    <div className="auth-page auth-page--login">
+      <div className="auth-shell auth-shell--login">
         <div className="auth-brand">
           <div className="brand-overlay" />
           <div className="brand-content">
