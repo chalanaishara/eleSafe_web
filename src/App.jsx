@@ -1,7 +1,8 @@
 // src/App.jsx
 import { useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider, useAuth } from "./context/AuthContext";
+import { AuthProvider } from "./context/AuthProvider";
+import { useAuth } from "./hooks/useAuth";
 
 import LoginPage     from "./pages/LoginPage";
 
@@ -19,7 +20,7 @@ import OfficerReports  from "./components/OfficerReports";
 import OfficerProfile  from "./components/OfficerProfile";
 
 import "./App.css";
-import RegisterPage from "./pages/registerPage";
+import RegisterPage from "./pages/RegisterPage";
 
 // ── Route guard ───────────────────────────────────────────────────────────────
 function RequireAuth({ children, roles }) {

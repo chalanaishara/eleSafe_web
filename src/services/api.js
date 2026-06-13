@@ -1,5 +1,5 @@
 // src/services/api.js
-export const BASE_URL = "http://localhost:8080";
+export const BASE_URL = import.meta.env.VITE_API_URL || "https://elesafe.onrender.com";
 
 // ── Token helpers ─────────────────────────────────────────────────────────────
 export const getToken       = () => localStorage.getItem("accessToken");

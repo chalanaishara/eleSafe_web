@@ -1,6 +1,6 @@
 // src/components/Sidebar.jsx
 import { FaUsers, FaShieldAlt, FaFileAlt, FaClipboardList } from "react-icons/fa";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../hooks/useAuth";
 
 const ADMIN_TABS = [
   { id: "users",    label: "Village Users",  icon: <FaUsers /> },

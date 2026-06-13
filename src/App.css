@@ -205,35 +205,4 @@ td { padding: 13px 15px; border-bottom: 1px solid #f0f0f0; font-size: 0.9rem; co
   .content-container { padding: 16px; }
 }
 
-/* ========================================================================
-  8. UNTOUCHED REGISTER STYLES AT THE BASE
-  ========================================================================
-*/
-.register-container { min-height: 100vh; background: linear-gradient(to right, #021d0f, #043d24); display: flex; justify-content: center; align-items: flex-start; padding: 40px 20px; }
-.register-card      { background: #062a18; border-radius: 16px; padding: 40px; width: 700px; max-width: 100%; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
-.register-header    { text-align: center; margin-bottom: 28px; }
-.register-header h1 { color: #00ff66; margin: 0 0 6px; font-size: 1.6rem; }
-.register-header h2 { color: white; margin: 0 0 6px; font-size: 1.2rem; }
-.register-header p  { color: #9ca3af; margin: 0; font-size: 0.9rem; }
-.register-form      { }
-.form-grid          { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.form-grid .input-group { display: flex; flex-direction: column; }
-.form-grid .input-group.full { grid-column: span 2; }
-.form-grid .section-title { grid-column: span 2; color: #13ec37; font-weight: 700; margin-top: 8px; font-size: 0.95rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 16px; }
-.form-grid label    { color: #9ca3af; font-size: 0.82rem; margin-bottom: 5px; }
-.form-grid input { background: #0b2e1a; border: 1px solid #1f4d2e; color: white; padding: 10px 12px; border-radius: 8px; font-size: 0.9rem; outline: none; width: 100%; box-sizing: border-box; }
-.form-grid select { background: #ffffff; border: 1px solid #d1d5db; color: #000000; padding: 10px 12px; border-radius: 8px; font-size: 0.9rem; outline: none; width: 100%; box-sizing: border-box; }
-.form-grid input:focus { border-color: #13ec37; }
-.form-grid select:focus { border-color: #13ec37; }
-.form-grid select option { background: #ffffff; color: #000000; }
-.form-actions       { display: flex; gap: 12px; margin-top: 28px; }
-.back-btn           { padding: 12px 24px; background: transparent; border: 1px solid #4a6650; color: #9ca3af; border-radius: 8px; cursor: pointer; font-weight: 600; }
-.submit-btn         { flex: 1; padding: 12px; background: #13ec37; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 1rem; color: black; }
-.submit-btn:hover   { background: #00cc44; }
-.submit-btn:disabled{ opacity: 0.6; cursor: not-allowed; }
-.success-card       { background: #062a18; border-radius: 16px; padding: 60px 40px; text-align: center; color: white; max-width: 480px; margin: auto; }
-.success-icon       { font-size: 3rem; margin-bottom: 16px; }
-.success-card h2    { color: #13ec37; }
-.success-card p     { color: #9ca3af; }
-.login-redirect-btn { margin-top: 20px; padding: 12px 28px; background: #13ec37; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 1rem; }
-.error-banner       { background: #450a0a; border: 1px solid #ef4444; color: #fca5a5; padding: 10px 14px; border-radius: 8px; margin-bottom: 16px; font-size: 0.88rem; }
+/* Register styles moved to src/styles/auth.css */
