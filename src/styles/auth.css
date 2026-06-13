@@ -33,7 +33,7 @@
 /* Brand panel */
 .auth-brand {
   position: relative;
-  background: #0d3b22 url("/elephant-bg.jpg") center / cover no-repeat;
+  background: #0d3b22 url("/elephant-brand.jpg") center / cover no-repeat;
   min-height: 520px;
   display: flex;
   align-items: flex-end;
